@@ -9,6 +9,8 @@
 import UIKit
 
 class CalculatorViewController: UIViewController {
+    var resultTo2DecimalPlaces = ""
+    var buttonTitleMinusPercentSign = ""
     var tip = 0.10
     var numberOfPeople = 2
     var billTotal = 0.0
@@ -38,7 +40,7 @@ class CalculatorViewController: UIViewController {
         let buttonTitle = sender.currentTitle!
         
         //remove the last charecter "%" from the title
-        let buttonTitleMinusPercentSign = String(buttonTitle.dropLast())
+        buttonTitleMinusPercentSign = String(buttonTitle.dropLast())
         
         //turn the string into double
         let buttonTitleAsNumber = Double(buttonTitleMinusPercentSign)!
@@ -69,13 +71,22 @@ class CalculatorViewController: UIViewController {
             let result = billTotal*(1 + tip) / Double(numberOfPeople)
             
             //Round the result to 2 decimal places and turn it to strings
-            let resultTo2DecimalPlaces = String(format: "%.2f", result)
+            resultTo2DecimalPlaces = String(format: "%.2f", result)
+            
+            self.performSegue(withIdentifier: "goToResult", sender: self)
             
             print(resultTo2DecimalPlaces)
         }
-        
-        
-       
+    }
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        // Get the new view controller using segue.destination.
+        if segue.identifier == "goToResult"{
+            let destinationVc = segue.destination as! ResultsViewController
+            destinationVc.total = resultTo2DecimalPlaces
+            destinationVc.person = numberOfPeople
+            destinationVc.percent = buttonTitleMinusPercentSign
+        }
+        // Pass the selected object to the new view controller.
     }
 }
 
